@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Verilog Game // Premium RTL Verification Suite</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         :root {
             --bg-darkest: #070913;
-            --bg-card: rgba(13, 17, 33, 0.85);
-            --border-glow: rgba(0, 242, 254, 0.25);
+            --bg-card: #0d1121;
+            --border-glow: #00f2fe;
             --neon-cyan: #00f2fe;
             --neon-blue: #4facfe;
             --neon-pink: #ff2a85;
@@ -23,9 +21,6 @@
 
         body {
             background-color: var(--bg-darkest);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(0, 242, 254, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(255, 42, 133, 0.1) 0px, transparent 50%);
             color: var(--text-main);
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
@@ -36,24 +31,16 @@
             margin: 0;
             padding: 15px;
             box-sizing: border-box;
-            overflow-x: hidden;
-            user-select: none;
-            -webkit-user-select: none;
         }
 
         #game-cabinet {
             background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
             border: 2px solid var(--border-glow);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.15);
-            border-radius: 28px;
+            border-radius: 24px;
             width: 100%;
-            max-width: 600px;
-            padding: 35px;
+            max-width: 540px;
+            padding: 30px;
             box-sizing: border-box;
-            position: relative;
-            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .brand-header {
@@ -65,28 +52,25 @@
         }
 
         .embedded-icon {
-            width: 90px;
-            height: 90px;
-            border-radius: 20px;
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.4), inset 0 1px 2px rgba(255,255,255,0.2);
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, #10162e 0%, #060913 100%);
-            border: 1px solid rgba(0, 242, 254, 0.3);
+            background: #060913;
+            border: 1px solid var(--neon-cyan);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         h2 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 900;
             margin: 0;
             text-align: center;
             letter-spacing: 2px;
             text-transform: uppercase;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--neon-cyan);
         }
 
         .status-grid {
@@ -99,23 +83,21 @@
         .status-tile {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 10px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .tile-lbl {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: 800;
             margin-bottom: 4px;
         }
 
         .tile-val {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 900;
             color: var(--neon-cyan);
         }
@@ -123,143 +105,109 @@
         .timer-track {
             width: 100%;
             background: rgba(0, 0, 0, 0.4);
-            height: 10px;
-            border-radius: 5px;
+            height: 8px;
+            border-radius: 4px;
             margin-bottom: 25px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
             display: none;
         }
 
         #timer-fill {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, var(--semantic-pass) 0%, var(--neon-cyan) 60%, var(--neon-pink) 100%);
-            transition: width 0.1s linear;
+            background: var(--semantic-pass);
         }
 
         #display-bubble {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 25px;
             border: 1px dashed rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 4px 20px rgba(0,0,0,0.4);
         }
 
         #track-header {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 800;
             color: var(--neon-blue);
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         #prompt-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.5;
             margin: 0;
-            color: var(--text-main);
         }
 
         .pads-layout {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
 
         .arcade-pad {
             background: rgba(255, 255, 255, 0.03);
             color: var(--text-main);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 18px 22px;
-            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            line-height: 1.4;
             text-align: left;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
-            transition: transform 0.05s ease, box-shadow 0.05s ease, border-color 0.2s;
-            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s;
         }
 
-        .arcade-pad:hover:not(:disabled) {
+        .arcade-pad:hover {
             border-color: var(--neon-cyan);
-            background: rgba(0, 242, 254, 0.04);
-            transform: translateX(4px);
-        }
-
-        .arcade-pad:active:not(:disabled) {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+            background: rgba(0, 242, 254, 0.05);
         }
 
         .launcher-btn {
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+            background: var(--neon-cyan);
             color: #000;
             border: none;
-            padding: 20px;
-            border-radius: 18px;
-            font-size: 1.2rem;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 1.1rem;
             font-weight: 800;
-            letter-spacing: 1px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 6px 0 rgba(0, 194, 204, 0.3);
-            transition: all 0.1s ease;
-            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s;
         }
 
         .launcher-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 rgba(0, 194, 204, 0.3);
+            transform: scale(0.98);
         }
 
         #splash-banner {
             margin-top: 20px;
-            padding: 20px;
-            border-radius: 16px;
+            padding: 16px;
+            border-radius: 12px;
             display: none;
-            font-size: 1rem;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            line-height: 1.4;
             font-weight: 700;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .match-glow { 
-            background: rgba(0, 255, 135, 0.08); 
-            border: 1px solid var(--semantic-pass); 
-            color: var(--semantic-pass); 
-            box-shadow: 0 0 20px rgba(0, 255, 135, 0.15);
-        }
-        
-        .crush-shatter { 
-            background: rgba(255, 0, 85, 0.08); 
-            border: 1px solid var(--semantic-fail); 
-            color: var(--semantic-fail); 
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.15);
-        }
+        .match-glow { background: rgba(0, 255, 135, 0.1); border: 1px solid var(--semantic-pass); color: var(--semantic-pass); }
+        .crush-shatter { background: rgba(255, 0, 85, 0.1); border: 1px solid var(--semantic-fail); color: var(--semantic-fail); }
 
         #advance-track-btn {
             margin-top: 18px;
             background: transparent;
             border: 2px solid var(--electric-yellow);
             color: var(--electric-yellow);
-            padding: 16px;
-            border-radius: 16px;
+            padding: 14px;
+            border-radius: 12px;
             width: 100%;
             cursor: pointer;
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 1rem;
             display: none;
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s;
         }
 
         #advance-track-btn:hover {
@@ -269,7 +217,7 @@
 
         .system-utility-row {
             width: 100%;
-            max-width: 600px;
+            max-width: 540px;
             display: flex;
             justify-content: flex-end;
             margin-top: 20px;
@@ -279,28 +227,77 @@
             background: transparent;
             color: var(--text-muted);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 10px 16px;
-            font-size: 0.8rem;
-            font-weight: 700;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
         }
+    </style>
+</head>
+<body>
 
-        .flush-junk-btn:hover {
-            color: var(--semantic-fail);
-            border-color: var(--semantic-fail);
-        }
+<div id="game-cabinet">
+    <div class="brand-header">
+        <svg class="embedded-icon" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
+            <rect width="100" height="100" rx="16" fill="#060913"/>
+            <path d="M25 20 L45 55 L75 15" stroke="#00f2fe" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M30 65 C 50 80, 70 50, 80 35" stroke="#ff9900" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <h2>VERILOG GAME</h2>
+    </div>
+    
+    <div class="status-grid">
+        <div class="status-tile">
+            <div class="tile-lbl">Shields</div>
+            <div id="hud-lives" class="tile-val" style="color: var(--semantic-pass);">◆ ◆ ◆</div>
+        </div>
+        <div class="status-tile">
+            <div class="tile-lbl">Score</div>
+            <div id="hud-score" class="tile-val">0000</div>
+        </div>
+        <div class="status-tile">
+            <div class="tile-lbl">Record</div>
+            <div id="hud-high" class="tile-val" style="color: var(--neon-blue);">0000</div>
+        </div>
+    </div>
 
-        @media screen and (max-width: 480px) {
-            body { padding: 10px; }
-            #game-cabinet { padding: 20px; border-radius: 20px; }
-            .embedded-icon { width: 75px; height: 75px; border-radius: 16px; }
-            h2 { font-size: 1.4rem; }
-            .status-grid { gap: 8px; margin-bottom: 18px; }
-            .status-tile { padding: 8px; border-radius: 10px; }
-            .tile-lbl { font-size: 0.6rem; }
-            .tile-val { font-size: 1rem; }
-            #display-bubble { padding: 16px; border-radius: 14px; margin-bottom: 18px; }
-            #prompt-text { font-size: 0.95rem; }
+    <div class="timer-track" id="run-meter">
+        <div id="timer-fill"></div>
+    </div>
+    
+    <div id="display-bubble">
+        <div id="track-header">SYSTEM_READY</div>
+        <p id="prompt-text">Welcome, Hardware Architect. Initialize the core verification pipeline to begin testing advanced RTL optimizations and clock crossovers.</p>
+    </div>
+
+    <div id="action-cabinet">
+        <button class="launcher-btn" onclick="startVerificationBoard()">INITIALIZE CORE PIPELINE 🎮</button>
+    </div>
+
+    <div id="splash-banner"></div>
+    <button id="advance-track-btn" onclick="nextTrackGate()">COMMIT NODE & ADVANCE ➔</button>
+</div>
+
+<div class="system-utility-row">
+    <button class="flush-junk-btn" onclick="flushJunkMemory()">Public 🧹 PURGE RUNTIME CACHE</button>
+</div>
+
+<script>
+    let score = 0, lives = 3, streak = 0, currentTrackPointer = -1, runTimer = null;
+    const trackingLimit = 15; 
+
+    const trackSequence = [
+        {
+            trackName: "NODE_01 // ASYNC_CLOCK_SAMPLING",
+            q: "🔥 CLOCK DOMAIN SPLIT: A single-bit streaming sensor signal pulse arrives in a fast 100 MHz source domain and must be sampled safely by a slow 50 MHz destination clock. Hardware FIFOs are completely banned due to layout boundaries. How do you prevent bit data loss?",
+            opts: [
+                "A) Wire the sensor signal trace directly across to the destination register block.",
+                "B) Pass the bit through an intermediate 3-always-block Moore state machine first.",
+                "C) Anchor a Toggle Synchronizer in the source domain to extend the pulse, map it over using a 2-stage FF synchronizer, and follow with an edge-detector circuit.",
+                "D) Invert the master execution clock domain to latch data on alternate half-cycles."
+            ],
+            ans: 2,
+            ok: "✨ STAGE OK // Pulse extended into a level change in the fast domain, safely sampled by the slow clock via the 2-Stage synchronizer, and reconstructed via edge-detection with zero data loss!",
+            err: "💥 SIGNAL TRUNCATION // Direct connections cause setup breaches because the narrow 10ns pulse disappears completely before the slow 20ns clock edge can sample it."
+        },
+        {
